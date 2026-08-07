@@ -61,14 +61,14 @@ cada imóvel deve possuir um guia coerente com sua cidade, persistido e não reg
 
 ## Milestone 4 — Assistente Virtual
 
-- [ ] Criar endpoint de chat
-- [ ] Construir contexto com dados do imóvel
-- [ ] Incluir Guia de Experiências no contexto
-- [ ] Criar system prompt
-- [ ] Implementar streaming
-- [ ] Criar interface do chat
-- [ ] Tratar informações ausentes
-- [ ] Testar as quatro perguntas obrigatórias
+- [x] Criar endpoint de chat
+- [x] Construir contexto com dados do imóvel
+- [x] Incluir Guia de Experiências no contexto
+- [x] Criar system prompt
+- [x] Implementar streaming
+- [x] Criar interface do chat
+- [x] Tratar informações ausentes
+- [x] Testar as quatro perguntas obrigatórias
 
 Critério de conclusão:
 o assistente deve responder corretamente às perguntas do desafio e não inventar dados.
@@ -79,12 +79,12 @@ o assistente deve responder corretamente às perguntas do desafio e não inventa
 
 - [ ] Testar consulta por código
 - [ ] Testar código inexistente
-- [ ] Testar persistência do guia
-- [ ] Testar resposta inválida da IA
-- [ ] Testar contexto do chat
-- [ ] Executar lint
-- [ ] Executar build
-- [ ] Revisar erros e edge cases
+- [x] Testar persistência do guia
+- [x] Testar resposta inválida da IA
+- [x] Testar contexto do chat
+- [x] Executar lint
+- [x] Executar build
+- [x] Revisar erros e edge cases
 
 ---
 

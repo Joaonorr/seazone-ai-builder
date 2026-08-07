@@ -5,6 +5,7 @@ import { getPropertyByCode } from "@/lib/properties";
 
 import ExperienceGuideContent from "./experience-guide-content";
 import ExperienceGuideGenerator from "./experience-guide-generator";
+import GuestAssistant from "./guest-assistant";
 
 const propertyFacts = [
   {
@@ -320,6 +321,8 @@ export default async function PropertyPage({
             </section>
           </aside>
         </div>
+
+        <GuestAssistant propertyCode={property.code} />
 
         {property.experienceGuide ? (
           <ExperienceGuideContent guide={property.experienceGuide} />
