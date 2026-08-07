@@ -19,12 +19,10 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-  await prisma.experienceGuide.deleteMany();
-  await prisma.property.deleteMany();
-
-  await prisma.property.createMany({
-    data: [
-      {
+  await prisma.property.upsert({
+    where: { code: "FLN001" },
+    update: {},
+    create: {
         code: "FLN001",
         name: "Apartamento Beira-Mar Florianópolis",
         propertyType: "Apartamento",
@@ -74,8 +72,13 @@ async function main() {
 
         hostName: "Ana Paula",
         hostPhone: "+5548991234567",
-      },
-      {
+    },
+  });
+
+  await prisma.property.upsert({
+    where: { code: "GRM001" },
+    update: {},
+    create: {
         code: "GRM001",
         name: "Chalé Serra Gramado",
         propertyType: "Casa",
@@ -124,8 +127,7 @@ async function main() {
 
         hostName: "Carlos Eduardo",
         hostPhone: "+5554998765432",
-      },
-    ],
+    },
   });
 
   console.log("Seed concluído.");

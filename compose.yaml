@@ -37,6 +37,20 @@ services:
 
     command: npm run db:migrate:deploy
 
+  bootstrap:
+    image: seazone-ai-builder:dev
+    build:
+      context: .
+
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-seazone}:${POSTGRES_PASSWORD:-seazone_dev}@postgres:5432/${POSTGRES_DB:-seazone_ai_builder}?schema=public"
+
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+    command: npm run db:seed
+
   app:
     image: seazone-ai-builder:dev
     build:
@@ -48,7 +62,7 @@ services:
       AI_MODEL: ${AI_MODEL:-gemini-2.5-flash}
 
     depends_on:
-      migrate:
+      bootstrap:
         condition: service_completed_successfully
 
     ports:
