@@ -9,6 +9,7 @@ import {
   GuestAssistantError,
   type GuestAssistantLogEntry,
 } from "../src/lib/guest-assistant/errors";
+import { stripMarkdownEmphasis } from "../src/lib/guest-assistant/format";
 import { createGuestAssistantPost } from "../src/lib/guest-assistant/handler";
 import {
   buildGuestAssistantSystemPrompt,
@@ -533,5 +534,37 @@ test("a estrutura de log permitida não inclui prompt, mensagens ou causas técn
     "messageCount",
     "modelName",
     "propertyCode",
+  ]);
+});
+
+test("a apresentação remove ênfase Markdown sem alterar dados do imóvel", () => {
+  assert.equal(
+    stripMarkdownEmphasis("A rede Wi-Fi é **SeaHome_FLN001** e a senha é **floripa2024**."),
+    "A rede Wi-Fi é SeaHome_FLN001 e a senha é floripa2024.",
+  );
+  assert.equal(stripMarkdownEmphasis("**floripa2024**"), "floripa2024");
+  assert.equal(stripMarkdownEmphasis("__gramado@2024__"), "gramado@2024");
+});
+
+test("a apresentação preserva texto simples, sublinhado isolado e quebras de linha", () => {
+  const plainText = "O check-in pode ser feito a partir das 15:00.";
+
+  assert.equal(stripMarkdownEmphasis(plainText), plainText);
+  assert.equal(stripMarkdownEmphasis("SeaHome_FLN001"), "SeaHome_FLN001");
+  assert.equal(
+    stripMarkdownEmphasis("1. Santa Pizza\n2. Gula's Natural Food"),
+    "1. Santa Pizza\n2. Gula's Natural Food",
+  );
+});
+
+test("a apresentação remove marcadores ainda não fechados durante o streaming", () => {
+  const chunks = ["A senha é **flo", "ripa2024** pronto."];
+  const progressiveRenders = chunks.map((_, index) =>
+    stripMarkdownEmphasis(chunks.slice(0, index + 1).join("")),
+  );
+
+  assert.deepEqual(progressiveRenders, [
+    "A senha é flo",
+    "A senha é floripa2024 pronto.",
   ]);
 });

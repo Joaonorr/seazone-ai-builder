@@ -59,7 +59,7 @@ services:
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER:-seazone}:${POSTGRES_PASSWORD:-seazone_dev}@postgres:5432/${POSTGRES_DB:-seazone_ai_builder}?schema=public"
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
-      AI_MODEL: ${AI_MODEL:-gemini-2.5-flash}
+      AI_MODEL: ${AI_MODEL:-gemini-3.5-flash}
 
     depends_on:
       bootstrap:

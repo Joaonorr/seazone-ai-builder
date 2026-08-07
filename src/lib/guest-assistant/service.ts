@@ -20,7 +20,7 @@ import {
 } from "./prompt";
 import type { GuestAssistantMessage } from "./schema";
 
-const DEFAULT_MODEL_NAME = "gemini-2.5-flash";
+const DEFAULT_MODEL_NAME = "gemini-3.5-flash";
 const SAFE_STREAM_ERROR_MESSAGE =
   "Não foi possível responder agora. Tente novamente em alguns instantes.";
 

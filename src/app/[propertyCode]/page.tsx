@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
 
 import BrandWordmark from "@/components/brand-wordmark";
 import { getPropertyByCode } from "@/lib/properties";
@@ -7,6 +6,7 @@ import { getPropertyByCode } from "@/lib/properties";
 import ExperienceGuideContent from "./experience-guide-content";
 import ExperienceGuideGenerator from "./experience-guide-generator";
 import GuestAssistant from "./guest-assistant";
+import PropertyNotFound from "./property-not-found";
 
 const propertyFacts = [
   {
@@ -83,7 +83,7 @@ export default async function PropertyPage({
   const property = await getPropertyByCode(propertyCode.toUpperCase());
 
   if (!property) {
-    notFound();
+    return <PropertyNotFound />;
   }
 
   const accessType =

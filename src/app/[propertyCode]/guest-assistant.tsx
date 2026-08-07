@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 
+import { stripMarkdownEmphasis } from "@/lib/guest-assistant/format";
 import {
   GUEST_ASSISTANT_MAX_MESSAGES,
   GUEST_ASSISTANT_MAX_MESSAGE_LENGTH,
@@ -161,8 +162,9 @@ export default function GuestAssistant({ propertyCode }: { propertyCode: string 
           </div>
         ) : (
           messages.map((message) => {
-            const text = getMessageText(message);
             const isGuest = message.role === "user";
+            const rawText = getMessageText(message);
+            const text = isGuest ? rawText : stripMarkdownEmphasis(rawText);
 
             if (!text) {
               return null;

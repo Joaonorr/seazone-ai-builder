@@ -2,7 +2,7 @@ import "server-only";
 
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
-const defaultModelName = "gemini-2.5-flash";
+const defaultModelName = "gemini-3.5-flash";
 
 const apiKey = process.env.GEMINI_API_KEY?.trim();
 
