@@ -110,37 +110,37 @@ export default function GuestAssistant({ propertyCode }: { propertyCode: string 
 
   return (
     <section
-      className="mt-5 rounded-[1.75rem] border border-slate-200/80 bg-white px-4 py-7 shadow-sm sm:px-8 sm:py-9 lg:mt-8"
+      className="mt-6 border-t border-border pt-8 lg:mt-8 lg:pt-10"
       aria-labelledby="guest-assistant-title"
     >
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
         <div>
-          <p className="text-xs font-bold tracking-[0.18em] text-[#18736f] uppercase">
+          <p className="text-xs font-bold tracking-[0.18em] text-brand-primary uppercase">
             Tire suas dúvidas
           </p>
           <h2
             id="guest-assistant-title"
-            className="mt-2 text-2xl font-semibold tracking-tight text-slate-950"
+            className="mt-2 text-2xl font-semibold tracking-tight text-foreground"
           >
             Assistente Virtual
           </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-foreground-muted sm:text-base">
             Pergunte sobre acesso, regras, horários e experiências deste imóvel.
           </p>
         </div>
-        <span className="rounded-full bg-[#e8f4f1] px-3 py-1.5 text-xs font-medium text-[#18736f]">
+        <span className="rounded-full border border-border bg-neutral-muted px-3 py-1.5 text-xs font-medium text-foreground-muted">
           Respostas em tempo real
         </span>
       </div>
 
-      <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 flex max-w-3xl flex-col gap-2 sm:flex-row sm:flex-wrap">
         {suggestedQuestions.map((question) => (
           <button
             key={question}
             type="button"
             onClick={() => send(question)}
             disabled={isBusy}
-            className="min-h-11 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition-colors hover:border-[#1c8b84] hover:bg-[#e8f4f1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#18736f] disabled:cursor-not-allowed disabled:opacity-55"
+            className="min-h-12 w-full rounded-xl border border-border bg-surface px-4 py-3 text-left text-sm font-medium text-brand-deep hover:border-brand-primary hover:bg-brand-muted disabled:cursor-not-allowed disabled:opacity-55 sm:w-auto"
           >
             {question}
           </button>
@@ -149,14 +149,14 @@ export default function GuestAssistant({ propertyCode }: { propertyCode: string 
 
       <div
         ref={messageListRef}
-        className="mt-5 max-h-96 min-h-44 space-y-3 overflow-y-auto rounded-2xl border border-slate-200 bg-slate-50 p-3 sm:p-4"
+        className="mt-6 max-h-[28rem] max-w-3xl space-y-4 overflow-y-auto rounded-2xl border border-border bg-surface p-4 sm:p-5 md:max-h-[32rem] md:p-6"
         aria-live="polite"
         aria-relevant="additions text"
         aria-busy={isBusy}
         role="log"
       >
         {messages.length === 0 ? (
-          <div className="flex min-h-36 items-center justify-center px-4 text-center text-sm leading-6 text-slate-500">
+          <div className="py-3 text-sm leading-6 text-foreground-muted">
             Olá! Como posso ajudar com sua estadia?
           </div>
         ) : (
@@ -171,15 +171,15 @@ export default function GuestAssistant({ propertyCode }: { propertyCode: string 
             return (
               <article
                 key={message.id}
-                className={`w-fit max-w-[92%] rounded-2xl px-4 py-3 text-sm leading-6 whitespace-pre-wrap sm:max-w-[80%] sm:text-base ${
+                className={`w-fit text-base leading-7 whitespace-pre-wrap [overflow-wrap:anywhere] ${
                   isGuest
-                    ? "ml-auto bg-[#073f3d] text-white"
-                    : "mr-auto border border-slate-200 bg-white text-slate-700"
+                    ? "ml-auto max-w-[90%] rounded-xl bg-brand-deep px-4 py-3 text-white sm:max-w-xl"
+                    : "mr-auto max-w-[95%] border-l-2 border-brand-primary py-2 pl-4 text-brand-deep sm:max-w-[44rem]"
                 }`}
               >
                 <p
                   className={`mb-1 text-xs font-bold tracking-[0.12em] uppercase ${
-                    isGuest ? "text-emerald-200" : "text-[#18736f]"
+                    isGuest ? "text-brand-muted" : "text-brand-primary"
                   }`}
                 >
                   {isGuest ? "Hóspede" : "Assistente"}
@@ -191,9 +191,9 @@ export default function GuestAssistant({ propertyCode }: { propertyCode: string 
         )}
 
         {status === "submitted" && (
-          <div className="mr-auto flex w-fit items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500">
+          <div className="mr-auto flex w-fit max-w-[95%] items-center gap-2 border-l-2 border-brand-primary py-3 pl-4 text-sm text-foreground-muted">
             <span
-              className="h-2 w-2 animate-pulse rounded-full bg-[#1c8b84]"
+              className="h-2 w-2 animate-pulse rounded-full bg-brand-primary"
               aria-hidden="true"
             />
             Preparando resposta…
@@ -203,7 +203,7 @@ export default function GuestAssistant({ propertyCode }: { propertyCode: string 
 
       {error && (
         <div
-          className="mt-4 flex flex-col gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 sm:flex-row sm:items-center sm:justify-between"
+          className="mt-4 flex max-w-3xl flex-col gap-3 rounded-xl border border-coral/25 border-l-4 bg-coral-soft px-4 py-4 text-sm text-brand-deep sm:flex-row sm:items-center sm:justify-between"
           role="alert"
         >
           <p>Não foi possível concluir a resposta. Tente novamente.</p>
@@ -214,14 +214,14 @@ export default function GuestAssistant({ propertyCode }: { propertyCode: string 
               void regenerate();
             }}
             disabled={isBusy}
-            className="min-h-10 shrink-0 rounded-full border border-amber-300 bg-white px-4 font-semibold transition-colors hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700 disabled:cursor-not-allowed disabled:opacity-55"
+            className="min-h-12 w-full shrink-0 rounded-xl bg-brand-primary px-4 font-semibold text-white hover:bg-brand-deep disabled:cursor-not-allowed disabled:opacity-55 sm:w-auto"
           >
             Tentar novamente
           </button>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="mt-4">
+      <form onSubmit={handleSubmit} className="mt-4 max-w-3xl">
         <label htmlFor={`guest-assistant-input-${propertyCode}`} className="sr-only">
           Escreva sua pergunta para o Assistente Virtual
         </label>
@@ -234,18 +234,18 @@ export default function GuestAssistant({ propertyCode }: { propertyCode: string 
           rows={3}
           disabled={isBusy}
           placeholder="Escreva sua pergunta…"
-          className="min-h-24 w-full resize-y rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base leading-6 text-slate-950 outline-none placeholder:text-slate-400 focus-visible:border-[#18736f] focus-visible:ring-2 focus-visible:ring-[#18736f]/25 disabled:cursor-not-allowed disabled:bg-slate-100"
+          className="min-h-24 w-full resize-y rounded-xl border border-border bg-surface px-4 py-3 text-base leading-6 text-foreground placeholder:text-foreground-muted disabled:cursor-not-allowed disabled:bg-neutral-muted"
         />
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-xs text-slate-500">
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-foreground-muted">
             Enter envia · Shift+Enter cria uma nova linha
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
             {isBusy && (
               <button
                 type="button"
                 onClick={() => stop()}
-                className="min-h-11 rounded-full border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#18736f]"
+                className="min-h-12 flex-1 whitespace-nowrap rounded-xl border border-border bg-surface px-5 text-sm font-semibold text-brand-deep hover:bg-neutral-muted sm:flex-none"
               >
                 Parar resposta
               </button>
@@ -253,7 +253,7 @@ export default function GuestAssistant({ propertyCode }: { propertyCode: string 
             <button
               type="submit"
               disabled={isBusy || input.trim().length === 0}
-              className="min-h-11 rounded-full bg-[#073f3d] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#0b5552] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#18736f] disabled:cursor-not-allowed disabled:opacity-55"
+              className="min-h-12 flex-1 whitespace-nowrap rounded-xl bg-brand-primary px-6 text-sm font-semibold text-white hover:bg-brand-deep disabled:cursor-not-allowed disabled:opacity-55 sm:flex-none"
             >
               {isBusy ? "Respondendo…" : "Enviar pergunta"}
             </button>

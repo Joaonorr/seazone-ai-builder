@@ -1,26 +1,98 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
+
+  --brand-primary: #0055ff;
+  --brand-deep: #00143d;
+  --brand-muted: #e9eefb;
+  --neutral-muted: #eef0f6;
+
   --background: #ffffff;
-  --foreground: #171717;
+  --surface: #ffffff;
+  --surface-muted: #e9eefb;
+  --foreground: #00143d;
+  --foreground-muted: #4d5b77;
+  --border: #e0e4eb;
+
+  --coral: #fc5a54;
+  --coral-soft: #fff6f5;
+  --focus-ring: #0055ff;
+
+  /* Functional state colors; these are not part of the Seazone brand palette. */
+  --success: #10b981;
+  --warning-text: #92400e;
+
+  --radius-base: 12px;
+
+  --content-max-width: 64rem;
+  --content-gutter: 1rem;
+  --section-spacing: 3rem;
 }
 
 @theme inline {
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-muted: var(--brand-muted);
+  --color-neutral-muted: var(--neutral-muted);
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-border: var(--border);
+  --color-coral: var(--coral);
+  --color-coral-soft: var(--coral-soft);
+  --color-focus-ring: var(--focus-ring);
+  --color-success: var(--success);
+  --color-warning-text: var(--warning-text);
+  --font-sans: var(--font-dm-sans), sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (min-width: 640px) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --content-gutter: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --section-spacing: 4rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --content-gutter: 2rem;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans), sans-serif;
+}
+
+.content-container {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin-inline: auto;
+  padding-inline: var(--content-gutter);
+}
+
+:where(
+  a[href],
+  button,
+  input:not([type="hidden"]),
+  select,
+  textarea,
+  summary,
+  [role="button"],
+  [role="link"],
+  [tabindex]:not([tabindex="-1"])
+):focus-visible {
+  outline-color: var(--focus-ring) !important;
+  outline-style: solid !important;
+  outline-width: 2px !important;
+  outline-offset: 2px !important;
 }

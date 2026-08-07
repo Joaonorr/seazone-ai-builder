@@ -3,28 +3,38 @@ import type { ExperienceGuideView } from "@/lib/experience-guide/schema";
 const essentialTypeLabels = {
   pharmacy: "Farmácia",
   supermarket: "Supermercado",
-  hospital: "Saúde",
+  hospital: "Hospital / pronto atendimento",
 } as const;
 
 function PlaceList({
   items,
+  variant,
 }: {
   items: ExperienceGuideView["restaurants"] | ExperienceGuideView["attractions"];
+  variant: "restaurants" | "attractions";
 }) {
+  const isAttractions = variant === "attractions";
+
   return (
-    <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+    <ul className="mt-4 grid items-start gap-x-8 md:grid-cols-2">
       {items.map((item, index) => (
         <li
           key={`${item.name}-${index}`}
-          className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 sm:px-5"
+          className={`border-t py-5 ${
+            isAttractions ? "border-brand-primary/20" : "border-border"
+          }`}
         >
-          <div className="flex flex-wrap items-start justify-between gap-2">
-            <h4 className="font-semibold text-slate-950">{item.name}</h4>
-            <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-[#18736f] ring-1 ring-slate-200">
-              {item.distance}
-            </span>
-          </div>
-          <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
+          <h4 className="text-lg font-semibold text-foreground">{item.name}</h4>
+          <p
+            className={`mt-1 text-xs font-semibold ${
+              isAttractions ? "text-foreground-muted" : "text-brand-primary"
+            }`}
+          >
+            {item.distance}
+          </p>
+          <p className="mt-2 text-sm leading-6 text-foreground-muted">
+            {item.description}
+          </p>
         </li>
       ))}
     </ul>
@@ -38,77 +48,100 @@ export default function ExperienceGuideContent({
 }) {
   return (
     <section
-      className="mt-5 rounded-[1.75rem] border border-slate-200/80 bg-white px-5 py-7 shadow-sm sm:px-8 sm:py-9 lg:mt-8"
+      className="mt-6 border-t border-border pt-8 lg:mt-8 lg:pt-10"
       aria-labelledby="experiences-title"
     >
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
         <div>
-          <p className="text-xs font-bold tracking-[0.18em] text-[#18736f] uppercase">
+          <p className="text-xs font-bold tracking-[0.18em] text-brand-primary uppercase">
             Explore a região
           </p>
           <h2
             id="experiences-title"
-            className="mt-2 text-2xl font-semibold tracking-tight text-slate-950"
+            className="mt-2 text-2xl font-semibold tracking-tight text-foreground"
           >
             Experiências próximas
           </h2>
         </div>
-        <span className="rounded-full bg-[#e8f4f1] px-3 py-1.5 text-xs font-medium text-[#18736f]">
+        <span className="rounded-full border border-border bg-neutral-muted px-3 py-1.5 text-xs font-medium text-foreground-muted">
           Conteúdo criado com auxílio de IA
         </span>
       </div>
 
-      <div className="mt-6 rounded-2xl bg-[#073f3d] px-5 py-5 text-emerald-50 sm:px-6">
-        <p className="text-xs font-bold tracking-[0.14em] text-emerald-200 uppercase">
-          Boas-vindas
-        </p>
-        <p className="mt-2 leading-7">{guide.welcomeMessage}</p>
-      </div>
-
-      <div className="mt-7 grid gap-7 lg:grid-cols-2 lg:gap-8">
-        <div>
-          <h3 className="text-xl font-semibold text-slate-950">Restaurantes</h3>
-          <PlaceList items={guide.restaurants} />
+      <div className="mt-8 space-y-8 lg:space-y-10">
+        <div className="rounded-2xl border-l-4 border-brand-primary bg-brand-muted px-5 py-5 sm:px-6">
+          <p className="text-xs font-bold tracking-[0.14em] text-brand-primary uppercase">
+            Boas-vindas
+          </p>
+          <p className="mt-2 leading-7 text-brand-deep">{guide.welcomeMessage}</p>
         </div>
-        <div>
-          <h3 className="text-xl font-semibold text-slate-950">Atrações</h3>
-          <PlaceList items={guide.attractions} />
+
+        <section aria-labelledby="experiences-restaurants-title">
+          <h3
+            id="experiences-restaurants-title"
+            className="text-xl font-semibold text-foreground"
+          >
+            Restaurantes
+          </h3>
+          <PlaceList items={guide.restaurants} variant="restaurants" />
+        </section>
+
+        <section
+          className="rounded-2xl bg-brand-muted p-5 sm:p-6"
+          aria-labelledby="experiences-attractions-title"
+        >
+          <h3
+            id="experiences-attractions-title"
+            className="text-xl font-semibold text-brand-deep"
+          >
+            Atrações
+          </h3>
+          <PlaceList items={guide.attractions} variant="attractions" />
+        </section>
+
+        <section aria-labelledby="experiences-essentials-title">
+          <h3
+            id="experiences-essentials-title"
+            className="text-xl font-semibold text-foreground"
+          >
+            Serviços essenciais
+          </h3>
+          <ul className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {guide.essentials.map((service, index) => (
+              <li
+                key={`${service.type}-${service.name}-${index}`}
+                className="rounded-xl border border-border bg-surface px-4 py-4 sm:px-5"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs font-bold tracking-[0.1em] text-brand-primary uppercase">
+                    {essentialTypeLabels[service.type]}
+                  </span>
+                  <span className="text-xs font-semibold text-foreground-muted">
+                    {service.distance}
+                  </span>
+                </div>
+                <h4 className="mt-2 text-lg font-semibold text-foreground">
+                  {service.name}
+                </h4>
+                <p className="mt-2 text-sm leading-6 text-foreground-muted">
+                  {service.description}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <div className="rounded-2xl border border-coral/25 border-l-4 bg-coral-soft px-5 py-5 sm:px-6">
+          <p className="text-xs font-bold tracking-[0.14em] text-brand-deep uppercase">
+            Dica da estação
+          </p>
+          <p className="mt-2 leading-7 text-brand-deep">{guide.seasonalTip}</p>
         </div>
-      </div>
 
-      <div className="mt-7 border-t border-slate-200 pt-7">
-        <h3 className="text-xl font-semibold text-slate-950">Serviços essenciais</h3>
-        <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {guide.essentials.map((service, index) => (
-            <li
-              key={`${service.type}-${service.name}-${index}`}
-              className="rounded-2xl bg-[#e8f4f1] px-4 py-4 sm:px-5"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-xs font-bold tracking-[0.12em] text-[#18736f] uppercase">
-                  {essentialTypeLabels[service.type]}
-                </span>
-                <span className="text-xs font-semibold text-[#18736f]">
-                  {service.distance}
-                </span>
-              </div>
-              <h4 className="mt-2 font-semibold text-[#073f3d]">{service.name}</h4>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{service.description}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="mt-7 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-5">
-        <p className="text-xs font-bold tracking-[0.14em] text-amber-800 uppercase">
-          Dica da estação
+        <p className="text-xs leading-5 text-foreground-muted">
+          As distâncias informadas são aproximadas e podem variar conforme o trajeto.
         </p>
-        <p className="mt-2 leading-7 text-amber-950">{guide.seasonalTip}</p>
       </div>
-
-      <p className="mt-5 text-xs leading-5 text-slate-500">
-        As distâncias informadas são aproximadas e podem variar conforme o trajeto.
-      </p>
     </section>
   );
 }
