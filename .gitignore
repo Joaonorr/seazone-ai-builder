@@ -47,3 +47,7 @@ next-env.d.ts
 .env.local
 .env.*.local
 /documento-requisitos-seazone-guia-digital-hospede.md
+# agent tooling
+.agents/
+.claude/
+.windsurf/
