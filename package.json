@@ -7,19 +7,24 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --conditions=react-server --import tsx --import dotenv/config --test --test-concurrency=1 tests/*.test.ts",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.36",
+    "@ai-sdk/openai": "^4.0.33",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
+    "ai": "^7.0.55",
     "dotenv": "^17.4.2",
     "next": "16.3.0",
     "pg": "^8.22.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

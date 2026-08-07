@@ -1,18 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
-
 export default function PropertyError({
-  error,
   retry,
 }: {
-  error: Error & { digest?: string };
   retry: () => void;
 }) {
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
-
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f3f6f4] px-5 py-12 text-slate-950">
       <section className="w-full max-w-xl rounded-[2rem] border border-slate-200 bg-white px-7 py-12 text-center shadow-[0_24px_80px_-48px_rgba(15,23,42,0.45)] sm:px-12">

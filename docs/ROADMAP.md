@@ -31,11 +31,11 @@ o projeto deve compilar e os dois imóveis devem existir no banco.
 - [x] Consultar o imóvel pelo código
 - [x] Implementar tela de código inexistente
 - [x] Exibir dados básicos
-- [ ] Exibir fotos e amenidades
-- [ ] Exibir acesso e estacionamento
-- [ ] Exibir regras
-- [ ] Exibir contato e endereço
-- [ ] Adaptar layout para mobile
+- [x] Exibir fotos e amenidades
+- [x] Exibir acesso e estacionamento
+- [x] Exibir regras
+- [x] Exibir contato e endereço
+- [x] Adaptar layout para mobile
 
 Critério de conclusão:
 FLN001 e GRM001 devem apresentar os respectivos dados, e códigos inválidos devem apresentar erro amigável.
@@ -44,15 +44,15 @@ FLN001 e GRM001 devem apresentar os respectivos dados, e códigos inválidos dev
 
 ## Milestone 3 — Guia de Experiências
 
-- [ ] Definir schema da resposta da IA
-- [ ] Criar prompt de geração
-- [ ] Integrar provedor de LLM
-- [ ] Gerar conteúdo contextualizado
-- [ ] Validar resposta com Zod
-- [ ] Persistir conteúdo
-- [ ] Reutilizar guia existente
-- [ ] Implementar estado de carregamento
-- [ ] Implementar tratamento de falha
+- [x] Definir schema da resposta da IA
+- [x] Criar prompt de geração
+- [x] Integrar provedor de LLM
+- [x] Gerar conteúdo contextualizado
+- [x] Validar resposta com Zod
+- [x] Persistir conteúdo
+- [x] Reutilizar guia existente
+- [x] Implementar estado de carregamento
+- [x] Implementar tratamento de falha
 
 Critério de conclusão:
 cada imóvel deve possuir um guia coerente com sua cidade, persistido e não regenerado em cada acesso.
