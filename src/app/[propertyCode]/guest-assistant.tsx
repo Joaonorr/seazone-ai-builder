@@ -12,6 +12,7 @@ import {
 } from "react";
 
 import { stripMarkdownEmphasis } from "@/lib/guest-assistant/format";
+import { shouldShowGuestAssistantLoader } from "@/lib/guest-assistant/loader-state";
 import {
   GUEST_ASSISTANT_MAX_MESSAGES,
   GUEST_ASSISTANT_MAX_MESSAGE_LENGTH,
@@ -69,6 +70,12 @@ export default function GuestAssistant({ propertyCode }: { propertyCode: string 
     clearError,
   } = useChat({ transport });
   const isBusy = status === "submitted" || status === "streaming";
+  const lastMessage = messages.at(-1);
+  const showLoader = shouldShowGuestAssistantLoader({
+    status,
+    lastMessageRole: lastMessage?.role,
+    lastMessageText: lastMessage ? getMessageText(lastMessage) : "",
+  });
 
   useEffect(() => {
     const messageList = messageListRef.current;
@@ -192,7 +199,7 @@ export default function GuestAssistant({ propertyCode }: { propertyCode: string 
           })
         )}
 
-        {status === "submitted" && (
+        {showLoader && (
           <div className="mr-auto flex w-fit max-w-[95%] items-center gap-2 border-l-2 border-brand-primary py-3 pl-4 text-sm text-foreground-muted">
             <span
               className="h-2 w-2 animate-pulse rounded-full bg-brand-primary"

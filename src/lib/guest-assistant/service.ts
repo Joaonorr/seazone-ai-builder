@@ -1,5 +1,6 @@
 import {
   createUIMessageStreamResponse,
+  smoothStream,
   streamText,
   toUIMessageStream,
   type TextStreamPart,
@@ -185,6 +186,10 @@ async function startProviderStream({
       temperature: 0.2,
       maxRetries: 0,
       abortSignal,
+      experimental_transform: smoothStream({
+        chunking: "word",
+        delayInMs: 20,
+      }),
       onError: () => undefined,
     });
 

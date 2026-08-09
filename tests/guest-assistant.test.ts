@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import type { TextStreamPart } from "ai";
+import { smoothStream, type TextStreamPart } from "ai";
 
 import type { ExperienceGuideView } from "../src/lib/experience-guide/schema";
 import {
@@ -11,6 +11,7 @@ import {
 } from "../src/lib/guest-assistant/errors";
 import { stripMarkdownEmphasis } from "../src/lib/guest-assistant/format";
 import { createGuestAssistantPost } from "../src/lib/guest-assistant/handler";
+import { shouldShowGuestAssistantLoader } from "../src/lib/guest-assistant/loader-state";
 import {
   buildGuestAssistantSystemPrompt,
   GUEST_ASSISTANT_EXPERIENCES_PENDING_MESSAGE,
@@ -462,6 +463,74 @@ test("a resposta do serviço entrega múltiplos chunks antes da conclusão", asy
   assert.doesNotMatch(completeBody, /providerMetadata|thoughtSignature|metadado-interno/);
 });
 
+function extractSseEvents(body: string) {
+  const payloads = body
+    .split("\n")
+    .filter((line) => line.startsWith("data: "))
+    .map((line) => line.slice("data: ".length));
+  const doneIndex = payloads.indexOf("[DONE]");
+
+  assert.notEqual(doneIndex, -1);
+  assert.equal(doneIndex, payloads.length - 1);
+
+  return payloads.slice(0, doneIndex).map((payload) => JSON.parse(payload) as {
+    type: string;
+    delta?: string;
+  });
+}
+
+test("um único text-delta grande do provider chega ao cliente como múltiplos eventos text-delta em ordem, com o texto final idêntico", async () => {
+  const originalText =
+    "A rede Wi-Fi é SeaHome_FLN001 e a senha é floripa2024. Aproveite a conexão durante toda a sua estadia!";
+  const rawProviderStream = new ReadableStream<TextStreamPart<Record<never, never>>>({
+    start(controller) {
+      controller.enqueue({ type: "start" });
+      controller.enqueue({ type: "text-start", id: "text-single" });
+      controller.enqueue({
+        type: "text-delta",
+        id: "text-single",
+        text: originalText,
+        providerMetadata: {
+          google: { thoughtSignature: "metadado-interno-do-provider" },
+        },
+      });
+      controller.enqueue({ type: "text-end", id: "text-single" });
+      controller.enqueue(createFinishPart());
+      controller.close();
+    },
+  });
+  const smoothedProviderStream = rawProviderStream.pipeThrough(
+    smoothStream<Record<never, never>>({ chunking: "word", delayInMs: 5 })({
+      tools: {},
+    }),
+  );
+  const service = createGuestAssistantService({
+    findProperty: async () => createContext("FLN001"),
+    startProviderStream: async () => ({
+      stream: smoothedProviderStream,
+      modelName: "test-model",
+    }),
+  });
+
+  const response = await service({
+    propertyCode: "FLN001",
+    messages: [{ role: "user", content: "Qual a senha do WiFi?" }],
+    abortSignal: new AbortController().signal,
+  });
+  const body = await response.text();
+  const events = extractSseEvents(body);
+  const textDeltaEvents = events.filter(
+    (event): event is { type: "text-delta"; delta: string } => event.type === "text-delta",
+  );
+
+  assert.ok(
+    textDeltaEvents.length > 1,
+    "o provider emitiu um único delta grande, mas o cliente deve receber múltiplas atualizações progressivas",
+  );
+  assert.equal(textDeltaEvents.map((event) => event.delta).join(""), originalText);
+  assert.doesNotMatch(body, /providerMetadata|thoughtSignature|metadado-interno/);
+});
+
 test("erro assíncrono do provider é sanitizado e o log não contém dados sensíveis", async () => {
   const context = createContext("FLN001");
   const entries: GuestAssistantLogEntry[] = [];
@@ -554,6 +623,60 @@ test("a apresentação preserva texto simples, sublinhado isolado e quebras de l
   assert.equal(
     stripMarkdownEmphasis("1. Santa Pizza\n2. Gula's Natural Food"),
     "1. Santa Pizza\n2. Gula's Natural Food",
+  );
+});
+
+test("o loader do cliente fica visível em submitted e some assim que o assistente tem texto visível", () => {
+  assert.equal(
+    shouldShowGuestAssistantLoader({
+      status: "submitted",
+      lastMessageRole: "user",
+      lastMessageText: "",
+    }),
+    true,
+  );
+  assert.equal(
+    shouldShowGuestAssistantLoader({
+      status: "streaming",
+      lastMessageRole: "user",
+      lastMessageText: "",
+    }),
+    true,
+    "no início do streaming a última mensagem ainda pode ser a do hóspede",
+  );
+  assert.equal(
+    shouldShowGuestAssistantLoader({
+      status: "streaming",
+      lastMessageRole: "assistant",
+      lastMessageText: "",
+    }),
+    true,
+    "metadados sem texto (ex.: evento start) não devem esconder o loader",
+  );
+  assert.equal(
+    shouldShowGuestAssistantLoader({
+      status: "streaming",
+      lastMessageRole: "assistant",
+      lastMessageText: "A senha do Wi-Fi é",
+    }),
+    false,
+    "o primeiro texto visível deve remover o loader imediatamente",
+  );
+  assert.equal(
+    shouldShowGuestAssistantLoader({
+      status: "ready",
+      lastMessageRole: "assistant",
+      lastMessageText: "",
+    }),
+    false,
+  );
+  assert.equal(
+    shouldShowGuestAssistantLoader({
+      status: "error",
+      lastMessageRole: "assistant",
+      lastMessageText: "",
+    }),
+    false,
   );
 });
 
